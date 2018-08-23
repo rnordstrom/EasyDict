@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">EasyDict</string>
+    <string name="switch_choice_kanji">Kanji</string>
+    <string name="switch_choice_word">Word</string>
+    <string name="choice_info">Choose lookup type</string>
+    <string name="search_box_text">Search…</string>
+    <string name="search_button_text">Go</string>
+    <string name="kanji_cont_desc">Kanji image</string>
 </resources>
