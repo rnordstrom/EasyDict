@@ -14,7 +14,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +26,8 @@ public class Word extends AppCompatActivity {
     private Button searchButton;
     private ProgressBar progress;
 
-    private final String JISHO_BASE = "https://jisho.org/search/";
-    private final String WEBLIO_BASE = "https://www.weblio.jp/content/";
+    private String jishoBase;
+    private String weblioBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +43,9 @@ public class Word extends AppCompatActivity {
         wordPronunc = (TextView) findViewById(R.id.word_pronunc);
         searchButton = (Button) findViewById(R.id.search_button);
         progress = (ProgressBar) findViewById(R.id.search_prog);
+
+        jishoBase = getResources().getString(R.string.jisho_base);
+        weblioBase = getResources().getString(R.string.weblio_base);
 
         progress.setVisibility(View.INVISIBLE);
 
@@ -62,7 +64,7 @@ public class Word extends AppCompatActivity {
             ArrayList<String> results = new ArrayList<>();
 
             try {
-                Document jisho = Jsoup.connect(JISHO_BASE + strings[0]).get();
+                Document jisho = Jsoup.connect(jishoBase + strings[0]).get();
                 Element jp =
                         jisho.selectFirst(".concept_light-representation .text");
                 Element meanings =
@@ -86,7 +88,7 @@ public class Word extends AppCompatActivity {
                             .append("\n");
                 }
 
-                Document weblio = Jsoup.connect(WEBLIO_BASE + strings[0]).get();
+                Document weblio = Jsoup.connect(weblioBase + strings[0]).get();
                 Element midashigo = weblio.selectFirst(".midashigo");
                 Element pronuncKana =
                         midashigo.selectFirst("b");

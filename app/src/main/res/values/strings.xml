@@ -1,4 +1,5 @@
 <resources>
+    <!-- Layout -->
     <string name="app_name">EasyDict</string>
     <string name="switch_choice_kanji">Kanji</string>
     <string name="switch_choice_word">Word</string>
@@ -6,4 +7,10 @@
     <string name="search_box_text">Search…</string>
     <string name="search_button_text">Go</string>
     <string name="kanji_cont_desc">Kanji image</string>
+    <!-- URLs -->
+    <string name="jisho_base">https://jisho.org/search/</string>
+    <string name="jisho_tail">%23kanji</string>
+    <string name="weblio_base">https://www.weblio.jp/content/</string>
+    <string name="jitenon_base">https://kanji.jitenon.jp/cat/search.php?getdata=</string>
+    <string name="jitenon_tail">&amp;search=fpart&amp;search2=twin</string>
 </resources>
