@@ -84,11 +84,20 @@ public class Word extends AppCompatActivity {
                     if (item.hasClass("meaning-wrapper")) {
                         Element num = item.selectFirst(".meaning-definition-section_divider");
                         Element text = item.selectFirst(".meaning-meaning");
+                        Element supp = item.selectFirst(".sense-tag");
 
                         sb.append(num.text())
                                 .append(" ")
-                                .append(text.text())
-                                .append("\n");
+                                .append(text.text());
+
+                        if (supp != null && supp.text().contains("Usually written using kana alone")) {
+                            sb.append(" ")
+                                    .append("(")
+                                    .append(supp.text())
+                                    .append(")");
+                        }
+
+                        sb.append("\n");
                     }
                     else if (item.hasClass("meaning-tags")) {
                         sb.append("\n")
