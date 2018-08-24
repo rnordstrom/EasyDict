@@ -70,22 +70,31 @@ public class Word extends AppCompatActivity {
                 Element meanings =
                         jisho.selectFirst(".meanings-wrapper");
 
-                Element tags = meanings.selectFirst(".meaning-tags");
                 StringBuilder sb = new StringBuilder();
 
-                for (Element meaning : meanings.select(".meaning-wrapper")) {
-                    Element num = meaning.selectFirst(".meaning-definition-section_divider");
+                for (Element item : meanings.children()) {
 
-                    if (num == null) {
+                    if ((item.hasClass("meaning-tags")
+                            && item.text().contains("Wikipedia definition"))
+                            || (item.hasClass("meaning-tags")
+                            && item.text().contains("Other forms"))) {
                         break;
                     }
 
-                    Element text = meaning.selectFirst(".meaning-meaning");
+                    if (item.hasClass("meaning-wrapper")) {
+                        Element num = item.selectFirst(".meaning-definition-section_divider");
+                        Element text = item.selectFirst(".meaning-meaning");
 
-                    sb.append(num.text())
-                            .append(" ")
-                            .append(text.text())
-                            .append("\n");
+                        sb.append(num.text())
+                                .append(" ")
+                                .append(text.text())
+                                .append("\n");
+                    }
+                    else if (item.hasClass("meaning-tags")) {
+                        sb.append("\n")
+                                .append(item.text())
+                                .append("\n");
+                    }
                 }
 
                 Elements furigana = jisho.select(".furigana span");
@@ -144,7 +153,7 @@ public class Word extends AppCompatActivity {
                 }
 
                 results.add(wordJpText);
-                results.add(tags.text() + "\n" + sb.deleteCharAt(sb.length() - 1).toString());
+                results.add(sb.deleteCharAt(sb.length() - 1).toString());
                 results.add(pronuncKanaText + " " + pronuncMoraText);
 
                 return results;
