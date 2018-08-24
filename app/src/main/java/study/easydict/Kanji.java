@@ -31,7 +31,6 @@ public class Kanji extends AppCompatActivity {
     private TextView kanjiChar;
     private TextView kanjiMeaning;
     private ImageView kanjiImg;
-    private Button searchButton;
     private ProgressBar progress;
 
     private String jishoBase;
@@ -51,7 +50,6 @@ public class Kanji extends AppCompatActivity {
         kanjiChar = (TextView) findViewById(R.id.kanji_char);
         kanjiMeaning = (TextView) findViewById(R.id.kanji_meaning);
         kanjiImg = (ImageView) findViewById(R.id.kanji_img);
-        searchButton = (Button) findViewById(R.id.search_button);
         progress = (ProgressBar) findViewById(R.id.search_prog);
 
         jishoBase = getResources().getString(R.string.jisho_base);
@@ -60,6 +58,8 @@ public class Kanji extends AppCompatActivity {
         jitenonTail = getResources().getString(R.string.jitenon_tail);
 
         progress.setVisibility(View.INVISIBLE);
+
+        Button searchButton = (Button) findViewById(R.id.search_button);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,8 +141,9 @@ public class Kanji extends AppCompatActivity {
                 return;
             }
 
-            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap,
-                    UUID.randomUUID().toString(), " ");
+            // TODO Enable this when testing is done
+            /* MediaStore.Images.Media.insertImage(getContentResolver(), bitmap,
+                    UUID.randomUUID().toString(), " "); */
         }
     }
 }

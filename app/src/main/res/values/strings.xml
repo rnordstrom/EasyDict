@@ -7,6 +7,8 @@
     <string name="search_box_text">Search…</string>
     <string name="search_button_text">Go</string>
     <string name="kanji_cont_desc">Kanji image</string>
+    <string name="title_kanji">Kanji</string>
+    <string name="title_word">Word</string>
     <!-- URLs -->
     <string name="jisho_base">https://jisho.org/search/</string>
     <string name="jisho_tail">%23kanji</string>
