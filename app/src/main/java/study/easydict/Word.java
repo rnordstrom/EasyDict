@@ -88,25 +88,60 @@ public class Word extends AppCompatActivity {
                             .append("\n");
                 }
 
+                Elements furigana = jisho.select(".furigana span");
+                String wordJpText = jp.text();
+                String hiragana = flattenHiragana(furigana, wordJpText);
+
                 Document weblio = Jsoup.connect(weblioBase + strings[0]).get();
-                Element midashigo = weblio.selectFirst(".midashigo");
-                Element pronuncKana =
-                        midashigo.selectFirst("b");
-                Elements pronuncMora =
-                        midashigo.select("span");
-                StringBuilder sc = new StringBuilder();
+                Elements midashigos = weblio.select(".midashigo");
+                Element midashigo = null;
 
-                for (Element span : pronuncMora) {
-                    if (!span.text().contains("［")) {
-                        continue;
+                for (Element m : midashigos) {
+                    Element midashiB = m.selectFirst("b");
+
+                    for (int i = 0; i < hiragana.length(); i++) {
+                        if (midashiB == null) {
+                            break;
+                        }
+
+                        if (midashiB.text().indexOf(hiragana.charAt(i)) < 0) {
+                            break;
+                        }
+
+                        if (i == hiragana.length() - 1) {
+                            midashigo = m;
+                        }
                     }
-
-                    sc.append(span.text());
                 }
 
-                results.add(jp.text());
+                String pronuncKanaText;
+                String pronuncMoraText;
+
+                if (midashigo == null)
+                {
+                    pronuncKanaText = hiragana;
+                    pronuncMoraText = "";
+                } else {
+                    pronuncKanaText = midashigo.selectFirst("b").text();
+
+                    Elements pronuncMora =
+                            midashigo.select("span");
+                    StringBuilder sc = new StringBuilder();
+
+                    for (Element span : pronuncMora) {
+                        if (!span.text().contains("［")) {
+                            continue;
+                        }
+
+                        sc.append(span.text());
+                    }
+
+                    pronuncMoraText = sc.toString();
+                }
+
+                results.add(wordJpText);
                 results.add(tags.text() + "\n" + sb.deleteCharAt(sb.length() - 1).toString());
-                results.add(pronuncKana.text() + " " + sc.toString());
+                results.add(pronuncKanaText + " " + pronuncMoraText);
 
                 return results;
             } catch (Exception e) {
@@ -127,6 +162,24 @@ public class Word extends AppCompatActivity {
             wordPronunc.setText(strings.get(2));
 
             progress.setVisibility(View.INVISIBLE);
+        }
+
+        String flattenHiragana(Elements furigana, String word) {
+            StringBuilder sb = new StringBuilder();
+            Element e;
+
+            for (int i = 0; i < word.length(); i++) {
+                e = furigana.get(i);
+
+                if (e.text().isEmpty()) {
+                    sb.append(word.charAt(i));
+                }
+                else {
+                    sb.append(e.text());
+                }
+            }
+
+            return sb.toString();
         }
     }
 }
