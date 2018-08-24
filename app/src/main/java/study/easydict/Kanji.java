@@ -141,9 +141,9 @@ public class Kanji extends AppCompatActivity {
                 return;
             }
 
-            // TODO Enable this when testing is done
-            /* MediaStore.Images.Media.insertImage(getContentResolver(), bitmap,
-                    UUID.randomUUID().toString(), " "); */
+
+            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap,
+                    UUID.randomUUID().toString(), " ");
         }
     }
 }
