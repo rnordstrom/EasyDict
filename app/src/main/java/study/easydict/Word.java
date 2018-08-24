@@ -112,6 +112,10 @@ public class Word extends AppCompatActivity {
                             midashigo = m;
                         }
                     }
+
+                    if (midashigo != null) {
+                        break;
+                    }
                 }
 
                 String pronuncKanaText;
