@@ -106,8 +106,11 @@ public class Word extends AppCompatActivity {
                         sb.append("\n");
                     }
                     else if (item.hasClass("meaning-tags")) {
-                        sb.append("\n")
-                                .append(item.text())
+                        if (item.elementSiblingIndex() > 0) {
+                            sb.append("\n");
+                        }
+
+                        sb.append(item.text())
                                 .append("\n");
                     }
                 }
