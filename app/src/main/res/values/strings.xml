@@ -6,6 +6,8 @@
     <string name="choice_info">Choose lookup type</string>
     <string name="search_box_text">Search…</string>
     <string name="search_button_text">Go</string>
+    <string name="prev_button_text">Prev</string>
+    <string name="next_button_text">Next</string>
     <string name="kanji_cont_desc">Kanji image</string>
     <string name="title_kanji">Kanji</string>
     <string name="title_word">Word</string>
