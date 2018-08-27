@@ -57,6 +57,7 @@ public class Kanji extends AppCompatActivity {
         kanjiMeaning = findViewById(R.id.kanji_meaning);
         kanjiImg = findViewById(R.id.kanji_img);
         progress = findViewById(R.id.search_prog);
+        Button searchButton = findViewById(R.id.search_button);
 
         jishoBase = getResources().getString(R.string.jisho_base);
         jishoTail = getResources().getString(R.string.jisho_tail);
@@ -65,13 +66,13 @@ public class Kanji extends AppCompatActivity {
 
         progress.setVisibility(View.INVISIBLE);
 
-        Button searchButton = findViewById(R.id.search_button);
-
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 progress.setVisibility(View.VISIBLE);
                 new GetDataTask().execute(kanjiSearch.getText().toString());
+
+                kanjiSearch.setText("");
             }
         });
     }

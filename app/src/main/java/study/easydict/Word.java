@@ -43,8 +43,8 @@ public class Word extends AppCompatActivity {
         wordJp = findViewById(R.id.word_jp);
         wordMeaning = findViewById(R.id.word_meaning);
         wordPronunc = findViewById(R.id.word_pronunc);
-        Button searchButton = findViewById(R.id.search_button);
         progress = findViewById(R.id.search_prog);
+        Button searchButton = findViewById(R.id.search_button);
 
         jishoBase = getResources().getString(R.string.jisho_base);
         weblioBase = getResources().getString(R.string.weblio_base);
@@ -61,6 +61,8 @@ public class Word extends AppCompatActivity {
             public void onClick(View v) {
                 progress.setVisibility(View.VISIBLE);
                 new GetDataTask().execute(wordSearch.getText().toString());
+
+                wordSearch.setText("");
             }
         });
     }
