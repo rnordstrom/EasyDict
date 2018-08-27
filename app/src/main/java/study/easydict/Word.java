@@ -1,5 +1,6 @@
 package study.easydict;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,11 +24,12 @@ public class Word extends AppCompatActivity {
     private TextView wordJp;
     private TextView wordMeaning;
     private TextView wordPronunc;
-    private Button searchButton;
     private ProgressBar progress;
 
     private String jishoBase;
     private String weblioBase;
+
+    private ArrayList<String> tagFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +39,20 @@ public class Word extends AppCompatActivity {
     }
 
     private void setUp() {
-        wordSearch = (EditText) findViewById(R.id.word_search);
-        wordJp = (TextView) findViewById(R.id.word_jp);
-        wordMeaning = (TextView) findViewById(R.id.word_meaning);
-        wordPronunc = (TextView) findViewById(R.id.word_pronunc);
-        searchButton = (Button) findViewById(R.id.search_button);
-        progress = (ProgressBar) findViewById(R.id.search_prog);
+        wordSearch = findViewById(R.id.word_search);
+        wordJp = findViewById(R.id.word_jp);
+        wordMeaning = findViewById(R.id.word_meaning);
+        wordPronunc = findViewById(R.id.word_pronunc);
+        Button searchButton = findViewById(R.id.search_button);
+        progress = findViewById(R.id.search_prog);
 
         jishoBase = getResources().getString(R.string.jisho_base);
         weblioBase = getResources().getString(R.string.weblio_base);
+
+        tagFilter = new ArrayList<>();
+        tagFilter.add("Wikipedia definition");
+        tagFilter.add("Other forms");
+        tagFilter.add("Place");
 
         progress.setVisibility(View.INVISIBLE);
 
@@ -58,6 +65,7 @@ public class Word extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class GetDataTask extends AsyncTask<String, Void, List<String>> {
         @Override
         protected List<String> doInBackground(String... strings) {
@@ -75,9 +83,7 @@ public class Word extends AppCompatActivity {
                 for (Element item : meanings.children()) {
 
                     if ((item.hasClass("meaning-tags")
-                            && item.text().contains("Wikipedia definition"))
-                            || (item.hasClass("meaning-tags")
-                            && item.text().contains("Other forms"))) {
+                            && tagFilter.contains(item.text()))) {
                         break;
                     }
 
