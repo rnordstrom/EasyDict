@@ -1,13 +1,17 @@
 package study.easydict;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +23,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -46,11 +52,11 @@ public class Kanji extends AppCompatActivity {
     }
 
     private void setUp() {
-        kanjiSearch = (EditText) findViewById(R.id.kanji_search);
-        kanjiChar = (TextView) findViewById(R.id.kanji_char);
-        kanjiMeaning = (TextView) findViewById(R.id.kanji_meaning);
-        kanjiImg = (ImageView) findViewById(R.id.kanji_img);
-        progress = (ProgressBar) findViewById(R.id.search_prog);
+        kanjiSearch = findViewById(R.id.kanji_search);
+        kanjiChar = findViewById(R.id.kanji_char);
+        kanjiMeaning = findViewById(R.id.kanji_meaning);
+        kanjiImg = findViewById(R.id.kanji_img);
+        progress = findViewById(R.id.search_prog);
 
         jishoBase = getResources().getString(R.string.jisho_base);
         jishoTail = getResources().getString(R.string.jisho_tail);
@@ -59,7 +65,7 @@ public class Kanji extends AppCompatActivity {
 
         progress.setVisibility(View.INVISIBLE);
 
-        Button searchButton = (Button) findViewById(R.id.search_button);
+        Button searchButton = findViewById(R.id.search_button);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +76,7 @@ public class Kanji extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class GetDataTask extends AsyncTask<String, Void, List<String>> {
         @Override
         protected List<String> doInBackground(String... strings) {
@@ -86,11 +93,11 @@ public class Kanji extends AppCompatActivity {
 
                 Document jitenonKanji = Jsoup.connect(absUrl).get();
                 Element img = jitenonKanji.selectFirst("#kanjileft img");
-                String imgName = img.absUrl("src");
+                String imgAddress = img.absUrl("src");
 
                 results.add(chara.text());
                 results.add(meaning.text());
-                results.add(imgName);
+                results.add(imgAddress);
 
                 return results;
             } catch (Exception e) {
@@ -115,16 +122,48 @@ public class Kanji extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class GetImageTask extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... strings) {
             Bitmap img = null;
+            InputStream in = null;
+            String imgAddress = strings[0];
+            String imgName = UUID.randomUUID().toString() + ".gif";
 
             try {
-                InputStream in = new URL(strings[0]).openStream();
+                in = new URL(imgAddress).openStream();
                 img = BitmapFactory.decodeStream(in);
+
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                }
+
+                DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                Uri downloadUri = Uri.parse(imgAddress);
+                DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                        .setAllowedOverRoaming(false)
+                        .setTitle(imgName)
+                        .setMimeType("image/gif")
+                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
+                                File.separator + imgName);
+
+                if (dm != null) {
+                    dm.enqueue(request);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
+
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
             }
 
             return img;
@@ -133,17 +172,6 @@ public class Kanji extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             kanjiImg.setImageBitmap(bitmap);
-
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-
-                return;
-            }
-
-
-            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap,
-                    UUID.randomUUID().toString(), " ");
         }
     }
 }
