@@ -11,6 +11,9 @@
     <string name="kanji_cont_desc">Kanji image</string>
     <string name="title_kanji">Kanji</string>
     <string name="title_word">Word</string>
+    <string name="error_msg">An error has occurred</string>
+    <string name="limit_msg">Unable to fetch next word</string>
+    <string name="image_fail_msg">Unable to fetch image</string>
     <!-- URLs -->
     <string name="jisho_base">https://jisho.org/search/</string>
     <string name="jisho_tail">%23kanji</string>

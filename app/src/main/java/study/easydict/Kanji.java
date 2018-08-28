@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -103,10 +104,7 @@ public class Kanji extends AppCompatActivity {
                 return results;
             } catch (Exception e) {
                 e.printStackTrace();
-
-                for (int i = 0; i < 2; i++) {
-                    results.add("ERROR");
-                }
+                results.clear();
 
                 return results;
             }
@@ -114,10 +112,16 @@ public class Kanji extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<String> strings) {
-            kanjiChar.setText(strings.get(0));
-            kanjiMeaning.setText(strings.get(1));
+            if (strings.isEmpty()) {
+                Snackbar s = Snackbar.make(findViewById(R.id.clayout),
+                        getResources().getString(R.string.error_msg), Snackbar.LENGTH_SHORT);
+                s.show();
+            } else {
+                kanjiChar.setText(strings.get(0));
+                kanjiMeaning.setText(strings.get(1));
 
-            new GetImageTask().execute(strings.get(2));
+                new GetImageTask().execute(strings.get(2));
+            }
 
             progress.setVisibility(View.INVISIBLE);
         }
@@ -157,6 +161,7 @@ public class Kanji extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                img = null;
 
                 if (in != null) {
                     try {
@@ -172,7 +177,13 @@ public class Kanji extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            kanjiImg.setImageBitmap(bitmap);
+            if (bitmap == null) {
+                Snackbar s = Snackbar.make(findViewById(R.id.clayout),
+                        getResources().getString(R.string.image_fail_msg), Snackbar.LENGTH_SHORT);
+                s.show();
+            } else {
+                kanjiImg.setImageBitmap(bitmap);
+            }
         }
     }
 }

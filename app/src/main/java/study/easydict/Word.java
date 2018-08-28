@@ -2,6 +2,7 @@ package study.easydict;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -31,6 +32,8 @@ public class Word extends AppCompatActivity {
     private String currentWord;
     private int nextCount;
     private ArrayList<String> tagFilter;
+
+    private String errorMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,7 @@ public class Word extends AppCompatActivity {
                 progress.setVisibility(View.VISIBLE);
                 currentWord = wordSearch.getText().toString();
                 nextCount = 0;
+                errorMsg = getResources().getString(R.string.error_msg);
 
                 new GetDataTask().execute(currentWord);
 
@@ -81,6 +85,8 @@ public class Word extends AppCompatActivity {
                     nextCount--;
                 }
 
+                errorMsg = getResources().getString(R.string.error_msg);
+
                 new GetDataTask().execute(currentWord);
             }
         });
@@ -91,6 +97,7 @@ public class Word extends AppCompatActivity {
                 progress.setVisibility(View.VISIBLE);
 
                 nextCount++;
+                errorMsg = getResources().getString(R.string.limit_msg);
 
                 new GetDataTask().execute(currentWord);
             }
@@ -238,10 +245,7 @@ public class Word extends AppCompatActivity {
             return results;
         } catch (Exception e) {
             e.printStackTrace();
-
-            for (int i = 0; i < 3; i++) {
-                results.add("ERROR");
-            }
+            results.clear();
 
             return results;
         }
@@ -274,9 +278,14 @@ public class Word extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<String> strings) {
-            wordJp.setText(strings.get(0));
-            wordMeaning.setText(strings.get(1));
-            wordPronunc.setText(strings.get(2));
+            if (strings.isEmpty()) {
+                Snackbar s = Snackbar.make(findViewById(R.id.clayout), errorMsg, Snackbar.LENGTH_SHORT);
+                s.show();
+            } else {
+                wordJp.setText(strings.get(0));
+                wordMeaning.setText(strings.get(1));
+                wordPronunc.setText(strings.get(2));
+            }
 
             progress.setVisibility(View.INVISIBLE);
         }
