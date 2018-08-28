@@ -147,6 +147,21 @@ public class Word extends AppCompatActivity {
             Element furigana = jisho.select(".concept_light-representation .furigana").get(n);
             String wordJpText = jp.text();
             String hiragana = flattenHiragana(furigana.children(), wordJpText);
+            boolean hasRepeated = false;
+            String wordJpTextC = "";
+
+            if (wordJpText.contains("々")) {
+                hasRepeated = true;
+
+                int index = wordJpText.indexOf("々");
+                StringBuilder repeatedChars = new StringBuilder(wordJpText);
+
+                repeatedChars.replace(index, index + 1,
+                        wordJpText.substring(index - 1, index));
+
+                wordJpTextC = wordJpText;
+                wordJpText = repeatedChars.toString();
+            }
 
             Document weblio = Jsoup.connect(weblioBase + wordJpText).get();
             Elements midashigos = weblio.select(".midashigo");
@@ -167,13 +182,18 @@ public class Word extends AppCompatActivity {
                     s.printStackTrace();
                 }
 
-                if (kanji.isEmpty()
+                String cleanKanji = kanji.replaceAll("・", "")
+                        .replaceAll("\\s+","")
+                        .replaceAll("▽","")
+                        .replaceAll("▼", "");
+
+                if (cleanKanji.isEmpty()
                         && wordJpText.equals(midashiB.text()
                                 .replaceAll("\\s+","")
                                 .replaceAll("・", ""))) {
                     midashigo = m;
                     break;
-                } else if (kanji.contains(wordJpText)
+                } else if (cleanKanji.contains(wordJpText)
                         && hiragana.equals(midashiB.text()
                                 .replaceAll("\\s+","")
                                 .replaceAll("・", ""))) {
@@ -205,6 +225,10 @@ public class Word extends AppCompatActivity {
                 }
 
                 pronuncMoraText = sc.toString();
+            }
+
+            if (hasRepeated) {
+                wordJpText = wordJpTextC;
             }
 
             results.add(wordJpText);
