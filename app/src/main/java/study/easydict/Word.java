@@ -173,8 +173,7 @@ public class Word extends AppCompatActivity {
                                 .replaceAll("・", ""))) {
                     midashigo = m;
                     break;
-                }
-                else if (kanji.contains(wordJpText)
+                } else if (kanji.contains(wordJpText)
                         && hiragana.equals(midashiB.text()
                                 .replaceAll("\\s+","")
                                 .replaceAll("・", ""))) {
@@ -230,11 +229,11 @@ public class Word extends AppCompatActivity {
 
         for (int i = 0; i < word.length(); i++) {
             e = furigana.get(i);
+            char wordSym = word.charAt(i);
 
-            if (e.text().isEmpty()) {
+            if (e.text().isEmpty() && (int) wordSym > 0x3040 && (int) wordSym < 0x309F) {
                 sb.append(word.charAt(i));
-            }
-            else {
+            } else {
                 sb.append(e.text());
             }
         }
