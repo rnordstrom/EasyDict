@@ -259,7 +259,7 @@ public class Word extends AppCompatActivity {
             e = furigana.get(i);
             char wordSym = word.charAt(i);
 
-            if (e.text().isEmpty() && (int) wordSym > 0x3040 && (int) wordSym < 0x309F) {
+            if (e.text().isEmpty() && (int) wordSym > 0x3040 && (int) wordSym < 0x30FF) {
                 sb.append(word.charAt(i));
             } else {
                 sb.append(e.text());
