@@ -168,29 +168,19 @@ public class Word extends AppCompatActivity {
                 }
 
                 if (kanji.isEmpty()
-                        && wordJpText.equals(midashiB.text().replaceAll("\\s+",""))) {
+                        && wordJpText.equals(midashiB.text()
+                                .replaceAll("\\s+","")
+                                .replaceAll("・", ""))) {
                     midashigo = m;
                     break;
                 }
                 else if (kanji.contains(wordJpText)
-                        && hiragana.equals(midashiB.text().replaceAll("\\s+",""))) {
+                        && hiragana.equals(midashiB.text()
+                                .replaceAll("\\s+","")
+                                .replaceAll("・", ""))) {
                     midashigo = m;
                     break;
                 }
-
-                /*for (int i = 0; i < hiragana.length(); i++) {
-                    if (midashiB == null) {
-                        break;
-                    }
-
-                    if (midashiB.text().indexOf(hiragana.charAt(i)) < 0) {
-                        break;
-                    }
-
-                    if (i == hiragana.length() - 1) {
-                        midashigo = m;
-                    }
-                }*/
             }
 
             String pronuncKanaText;
