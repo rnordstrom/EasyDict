@@ -271,27 +271,28 @@ public class Word extends AppCompatActivity {
             String wordJpText = jp.text();
             String hiragana = flattenHiragana(furigana.children(), wordJpText);
             boolean hasRepeated = false;
-            String wordJpTextC = "";
+            String wordJpTextC = wordJpText;
+            StringBuilder repeatedChars = new StringBuilder(wordJpText);
 
-            if (wordJpText.contains("々")) {
+            while (wordJpText.contains("々")) {
                 hasRepeated = true;
 
                 int index = wordJpText.indexOf("々");
-                StringBuilder repeatedChars = new StringBuilder(wordJpText);
 
                 repeatedChars.replace(index, index + 1,
                         wordJpText.substring(index - 1, index));
 
-                wordJpTextC = wordJpText;
                 wordJpText = repeatedChars.toString();
             }
 
-            if (hasRepeated) {
-                wordJpText = wordJpTextC;
+            if (!hasRepeated) {
+                result = new WordDefinition(wordJpText, engDef, weblioLookUp(wordJpText, hiragana),
+                        otherForms.size());
+            } else {
+                result = new WordDefinition(wordJpTextC, engDef, weblioLookUp(wordJpText, hiragana),
+                        otherForms.size());
             }
 
-            result = new WordDefinition(wordJpText, engDef, weblioLookUp(wordJpText, hiragana),
-                    otherForms.size());
             result.setLookedUp(true);
             currOtherForms.add(0, result);
 
