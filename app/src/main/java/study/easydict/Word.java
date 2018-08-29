@@ -199,6 +199,13 @@ public class Word extends AppCompatActivity {
 
         try {
             Document jisho = Jsoup.connect(jishoBase + strings[0]).get();
+
+            Element gramLink = jisho.selectFirst(".grammar-breakdown a");
+
+            if (gramLink != null) {
+                jisho = Jsoup.connect(gramLink.absUrl("href")).get();
+            }
+
             Element jp =
                     jisho.select(".concept_light-representation .text").get(n);
             Element meanings =
