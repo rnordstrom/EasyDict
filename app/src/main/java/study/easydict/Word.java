@@ -77,6 +77,13 @@ public class Word extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progress.setVisibility(View.VISIBLE);
+
+                if (wordSearch.getText().toString().isEmpty()) {
+                    progress.setVisibility(View.INVISIBLE);
+
+                    return;
+                }
+
                 currentWord = wordSearch.getText().toString();
                 nextCount = 0;
                 formCount = 0;
@@ -133,7 +140,14 @@ public class Word extends AppCompatActivity {
                     formCount = currOtherForms.size() - 1;
                 }
 
-                WordDefinition def = currOtherForms.get(formCount);
+                WordDefinition def;
+
+                if (!currOtherForms.isEmpty()) {
+                    def = currOtherForms.get(formCount);
+                } else {
+                    progress.setVisibility(View.INVISIBLE);
+                    return;
+                }
 
                 if (!def.isLookedUp()) {
                     new GetOtherFormsTask().execute(def);
@@ -158,7 +172,14 @@ public class Word extends AppCompatActivity {
                     formCount = 0;
                 }
 
-                WordDefinition def = currOtherForms.get(formCount);
+                WordDefinition def;
+
+                if (!currOtherForms.isEmpty()) {
+                    def = currOtherForms.get(formCount);
+                } else {
+                    progress.setVisibility(View.INVISIBLE);
+                    return;
+                }
 
                 if (!def.isLookedUp()) {
                     new GetOtherFormsTask().execute(def);
@@ -300,7 +321,11 @@ public class Word extends AppCompatActivity {
                 String cleanKanji = kanji.replaceAll("・", "")
                         .replaceAll("\\s+", "")
                         .replaceAll("▽", "")
-                        .replaceAll("▼", "");
+                        .replaceAll("▼", "")
+                        .replaceAll("（", "")
+                        .replaceAll("）", "")
+                        .replaceAll("〈", "")
+                        .replaceAll("〉", "");
 
                 if (cleanKanji.isEmpty()
                         && word.equals(midashiB.text()
@@ -379,6 +404,11 @@ public class Word extends AppCompatActivity {
             if (def.isHasException()) {
                 Snackbar s = Snackbar.make(findViewById(R.id.clayout), errorMsg, Snackbar.LENGTH_SHORT);
                 s.show();
+
+                wordJp.setText("");
+                wordMeaning.setText("");
+                wordPronunc.setText("");
+                numForms.setText("");
             } else {
                 wordJp.setText(def.getWordJp());
                 wordMeaning.setText(def.getEngDef());
