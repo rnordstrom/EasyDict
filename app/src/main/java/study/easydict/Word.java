@@ -333,7 +333,9 @@ public class Word extends AppCompatActivity {
                         .replaceAll("（", "")
                         .replaceAll("）", "")
                         .replaceAll("〈", "")
-                        .replaceAll("〉", "");
+                        .replaceAll("〉", "")
+                        .replaceAll("《", "")
+                        .replaceAll("》", "");
 
                 if (cleanKanji.isEmpty()
                         && word.equals(midashiB.text()
