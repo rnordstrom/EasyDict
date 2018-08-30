@@ -387,15 +387,30 @@ public class Word extends AppCompatActivity {
     private String flattenHiragana(Elements furigana, String word) {
         StringBuilder sb = new StringBuilder();
         Element e;
+        int i;
+        int HIRAGANA_UNIC_START = 0x3040;
+        int KATAKANA_UNIC_END = 0x30FF;
 
-        for (int i = 0; i < word.length(); i++) {
+        for (i = 0; i < furigana.size(); i++) {
             e = furigana.get(i);
             char wordSym = word.charAt(i);
 
-            if (e.text().isEmpty() && (int) wordSym > 0x3040 && (int) wordSym < 0x30FF) {
+            if (e.text().isEmpty()
+                    && (int) wordSym > HIRAGANA_UNIC_START
+                    && (int) wordSym < KATAKANA_UNIC_END) {
                 sb.append(word.charAt(i));
             } else {
                 sb.append(e.text());
+            }
+        }
+
+        if (i < word.length()) {
+            for (int j = i; j < word.length(); j++) {
+                char wordSym = word.charAt(j);
+
+                if ((int) wordSym > HIRAGANA_UNIC_START && (int) wordSym < KATAKANA_UNIC_END) {
+                    sb.append(word.charAt(j));
+                }
             }
         }
 
